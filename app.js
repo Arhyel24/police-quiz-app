@@ -11,7 +11,7 @@ const app = express();
 
 
 app.set('view engine', 'ejs');
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
@@ -57,7 +57,7 @@ app.get('/', (req, res) => {
 app.get('/script.js', (req, res) => {
   res.type('application/javascript');
   // Your JavaScript file content or send the file using res.sendFile()
-  res.sendFile('./Public/script.js');
+  res.sendFile(path.join(__dirname, 'public', 'script.js'));
 });
 
 app.get('/style.css', (req, res) => {
