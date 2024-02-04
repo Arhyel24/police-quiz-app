@@ -53,6 +53,18 @@ app.get('/', (req, res) => {
   res.render('login');
 });
 
+app.get('/script.js', (req, res) => {
+  res.type('application/javascript');
+  // Your JavaScript file content or send the file using res.sendFile()
+  res.sendFile(path.join(__dirname, 'public', 'script.js'));
+});
+
+app.get('/style.css', (req, res) => {
+  res.type('text/css');
+  // Your CSS file content or send the file using res.sendFile()
+  res.sendFile(path.join(__dirname, 'public', 'style.js'));
+});
+
 app.post('/quiz', async (req, res) => {
   const username = req.body.username;
   
