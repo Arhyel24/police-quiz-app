@@ -28,12 +28,12 @@ app.use(cookieSession({
 app.use(async (req, res, next) => {
   try {
     const allQuestions = await Question.find();
-    const shuffledQuestions = allQuestions.sort(() => Math.random() - 0.5)
+    // const shuffledQuestions = allQuestions.sort(() => Math.random() - 0.5)
     // const shuffledQuestions = shuffleArray(allQuestions);
     const Answers = Array(allQuestions.length).fill(null);
 
     req.showQuestions = {
-      questions: shuffledQuestions,
+      questions: allQuestions,
       userAnswers: Answers
     }
     next();
