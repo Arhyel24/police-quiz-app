@@ -1,0 +1,12 @@
+{
+  "apps": [
+    {
+      "app_id": "app_3aba038f-ba02-4fcf-b506-e67228e3c84f",
+      "org_id": "user_e5937d49-1d53-4dfe-b622-0e848f1a4fb8",
+      "deploy_url": "https://push-n3-par-clevercloud-customers.services.clever-cloud.com/app_3aba038f-ba02-4fcf-b506-e67228e3c84f.git",
+      "git_ssh_url": "git+ssh://git@push-n3-par-clevercloud-customers.services.clever-cloud.com/app_3aba038f-ba02-4fcf-b506-e67228e3c84f.git",
+      "name": "policeQuizApp",
+      "alias": "policeQuizApp"
+    }
+  ]
+}
