@@ -63,7 +63,7 @@ app.get('/script.js', (req, res) => {
 app.get('/style.css', (req, res) => {
   res.type('text/css');
   // Your CSS file content or send the file using res.sendFile()
-  res.sendFile('/style.js'));
+  res.sendFile('/style.css'));
 });
 
 app.post('/quiz', async (req, res) => {
