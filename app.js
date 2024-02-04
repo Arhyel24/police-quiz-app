@@ -57,13 +57,13 @@ app.get('/', (req, res) => {
 app.get('/script.js', (req, res) => {
   res.type('application/javascript');
   // Your JavaScript file content or send the file using res.sendFile()
-  res.sendFile('/script.js');
+  res.sendFile('./Public/script.js');
 });
 
 app.get('/style.css', (req, res) => {
   res.type('text/css');
   // Your CSS file content or send the file using res.sendFile()
-  res.sendFile('/style.css');
+  res.sendFile('./Public/style.css');
 });
 
 app.post('/quiz', async (req, res) => {
