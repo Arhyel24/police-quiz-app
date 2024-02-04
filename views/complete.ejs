@@ -1,0 +1,29 @@
+<%- include('partials/header.ejs') %>
+<div class="card">
+  <h1>Quiz Complete</h1>
+  <p>Hurray!!! <b><%= userAtempt.username %></b>, you have completed the quiz!</p>
+  <p>Your score: <b><%= userAtempt.score %>%</b></p>
+
+  <% if (userAtempt.score <= 50) { %>
+    <p>You need to work a little harder next time.</p>
+  <% } else { %>
+    <p>Your doing great, keep it up!!</p>
+  <% } %>
+  <a href="/" class="btn" type="button">Retake test</a>
+
+  <div class="leaderboard">
+    <h2>Leadership Board</h2>
+    <% users.forEach(user => { %>
+      <div class="item-4">
+        <div class="text">
+            <p><%= user.userName %></p>
+        </div>
+        <span><%= user.testScore %>%</span>
+    </div>
+    <% }) %>
+    
+  </div>
+
+  </div>
+
+  <%- include('partials/footer.ejs') %>
