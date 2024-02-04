@@ -27,15 +27,24 @@ app.use(cookieSession({
 
 app.use(async (req, res, next) => {
   try {
-    const allQuestions = await Question.find();
-    // const shuffledQuestions = allQuestions.sort(() => Math.random() - 0.5)
-    // const shuffledQuestions = shuffleArray(allQuestions);
-    const Answers = Array(allQuestions.length).fill(null);
 
-    req.showQuestions = {
-      questions: allQuestions,
-      userAnswers: Answers
+    const allQuestions = await Question.find();
+
+    if (index === 0) {
+      const shuffledQuestions = allQuestions.sort(() => Math.random() - 0.5)
+          // const shuffledQuestions = shuffleArray(allQuestions);
+      const Answers = Array(shuffledQuestions.length).fill(null);
+      req.showQuestions = {
+        questions: shuffledQuestions,
+        userAnswers: Answers
+      }
+    } else {
+      req.showQuestions = {
+        questions: shuffledQuestions,
+        userAnswers: Answers
+      }
     }
+
     next();
   } catch (err) {
     console.error('Error fetching questions', err);
