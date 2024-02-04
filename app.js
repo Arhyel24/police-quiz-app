@@ -23,24 +23,17 @@ app.use(cookieSession({
   keys: ['your-secret-key'],
   maxAge: 24 * 60 * 60 * 1000,
 }));
- 
 
-function shuffleArray(array) {
-  for (let i = array.length -1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
 
 app.use(async (req, res, next) => {
   try {
     const allQuestions = await Question.find();
+    const shuffledQuestions = allQuestions.sort(() => Math.random() - 0.5)
     // const shuffledQuestions = shuffleArray(allQuestions);
     const Answers = Array(allQuestions.length).fill(null);
 
     req.showQuestions = {
-      questions: allQuestions.sort(() => Math.random() - 0.5),
+      questions: shuffledQuestions,
       userAnswers: Answers
     }
     next();
