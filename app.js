@@ -28,22 +28,18 @@ app.use(cookieSession({
 app.use(async (req, res, next) => {
   try {
 
-    const allQuestions = await Question.find();
-
-    if (!req.showQuestions) {
-      const shuffledQuestions = allQuestions.sort(() => Math.random() - 0.5)
-          // const shuffledQuestions = shuffleArray(allQuestions);
-      const Answers = Array(shuffledQuestions.length).fill(null);
-      req.showQuestions = {
-        questions: shuffledQuestions,
-        userAnswers: Answers
-      }
-    } else {
-      req.showQuestions = {
-        questions: shuffledQuestions,
-        userAnswers: Answers
-      }
+    if (!req.session.shuffledQuestions) {
+      // If questions are not shuffled in the session, shuffle them
+      const allQuestions = await Question.find();
+      const shuffledQuestions = allQuestions.sort(() => Math.random() - 0.5);
+      req.session.shuffledQuestions = shuffledQuestions;
+      req.session.userAnswers = Array(shuffledQuestions.length).fill(null);
     }
+
+    req.showQuestions = {
+      questions: req.session.shuffledQuestions,
+      userAnswers: req.session.userAnswers,
+    };
 
     next();
   } catch (err) {
