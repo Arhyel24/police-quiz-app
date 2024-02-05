@@ -1,32 +1,41 @@
 <%- include('partials/header.ejs') %>
-<div class="card">
-  <h1>Question <%= index + 1 %> of <%= totalQuestions %></h1>
-  <div class="question">
-    <p><%= question.questionText %></p>
-    <form action="/quiz/answer/<%= index %>" method="post">
-      <ul>
-        <% question.options.forEach((option, i) => { %>
-          <li>
-            <input type="radio" class="optionradio" id="option<%= i %>" name="answer" value="<%= i %>"
-                   <% if (userAnswer !== null && userAnswer === i) { %>checked<% } %>>
-            <label for="option<%= i %>"><%= option %></label>
-          </li>
-        <% }); %>
-      </ul>
-      <div class="buttons">
-
-        <% if (index > 0) { %>
-          <a href="/quiz/question/<%= index - 1 %>" class="btn">Previous</a>
-        <% } %>
-    
-        <% if (index < totalQuestions - 1) { %>
-          <button type="submit" name="action" value="next" class="optionbtn btn">Next</button>
-        <% } else { %>
-          <button type="submit" name="action" value="submit" class="optionbtn btn">Submit</button>
-        <% } %>
+<div class="container">
+  <div class="legend-box">
+      <h2>Question <%= index + 1 %> of <%= totalQuestions %></h2>
+      <div class="l-box">
+          <% for( let i = 0; i < totalQuestions; i++ ) { %>
+              <a href="/quiz/question/<%= i %>"><%= i + 1 %></a>
+          <% }; %>
       </div>
+  </div>
+  <div class="questions-side">
+      <div class="question">
+          <p><%= question.questionText %></p>
+          <form action="/quiz/answer/<%= index %>" method="post">
+            <ul>
+              <% question.options.forEach((option, i) => { %>
+                <li class="optionlist">
+                  <input type="radio" class="optionradio" id="option<%= i %>" name="answer" value="<%= i %>"
+                         <% if (userAnswer !== null && userAnswer === i) { %>checked<% } %>>
+                  <label for="option<%= i %>"><%= option %></label>
+                </li>
+              <% }); %>
+            </ul>
+            <div class="buttons">
       
-    </form>
+              <% if (index > 0) { %>
+                <a href="/quiz/question/<%= index - 1 %>" class="btn">Previous</a>
+              <% } %>
+          
+              <% if (index < totalQuestions - 1) { %>
+                <button type="submit" name="action" value="next" class="optionbtn btn">Next</button>
+              <% } else { %>
+                <button type="submit" name="action" value="submit" class="optionbtn btn">Submit</button>
+              <% } %>
+            </div>
+            
+          </form>
+        </div>
   </div>
 </div>
 <%- include('partials/footer.ejs') %>

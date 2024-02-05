@@ -7,6 +7,7 @@
     <!-- <link type="text/css" rel="stylesheet" href="/style.css"> -->
     <style>
         body {
+    /* background-image: url(".../images/OQCI8I0.jpg"); */
     background-image: url("https://cdn.dribbble.com/users/61784/screenshots/3539373/media/7b4f3daee2d1a17ab60dbe05652cbae9.jpg");
     background-repeat: no-repeat;
     background-position: center;
@@ -16,6 +17,11 @@
     display: grid;
     place-items: center;
     height: 100vh;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 1.5rem;
   }
   
   h1 {
@@ -172,6 +178,89 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+body {
+    
+}
+
+main {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    display: flex;
+    width: 80%;
+    padding: 2rem;
+}
+
+
+.legend-box{
+    width: 30%;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+} 
+
+.questions-side {
+    width: 70%;
+    padding: .5rem;
+    height: fit-content;
+    border: 1px solid black;
+    border-radius: 10px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    background: rgba(255, 255, 255, .35);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 5px 10px 0 rgba(31, 38, 135, 0.37);
+}
+.legend-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.l-box {
+    width: 80%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+.l-box a {
+    text-decoration: none;
+    border: 1px solid black;
+    width: 2rem;
+    height: 2rem;
+    text-align: center;
+    border-radius: 5px;
+    background-color: rgba(206, 205, 205, 0.938);
+    color: #000;
+}
+
+li.optionlist {
+    margin: .5rem 0;
+    padding: .5rem 0;
+}
+
+@media screen and (max-width: 800px) {
+    .container {
+        width: 100%;
+        flex-direction: column-reverse;
+    }
+
+    .legend-box, .questions-side {
+        width: 100%;
+    }
+
+    .legend-box {
+        justify-content: center;
+    } 
+
+    .l-box {
+      width: 100%;
+    }
 }
     </style>
 </head>
