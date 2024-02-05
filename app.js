@@ -15,9 +15,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-
+// 'mongodb+srv://admin-wyteshadow:Mararra24@cluster0.bvh696d.mongodb.net/quizApp'
 mongoose.connect('mongodb+srv://admin-wyteshadow:Mararra24@cluster0.bvh696d.mongodb.net/quizApp');
-
+// mongodb://localhost:27017/quizApp
 app.use(cookieSession({
   name: 'session',
   keys: ['your-secret-key'],
@@ -25,23 +25,31 @@ app.use(cookieSession({
 }));
 
 
-app.use(async (req, res, next) => {
-  try {
+  app.use(async (req, res, next) => {
 
     if (!req.session.shuffledQuestions) {
-      // If questions are not shuffled in the session, shuffle them
-      const allQuestions = await Question.find();
-      const shuffledQuestions = allQuestions.sort(() => Math.random() - 0.5);
-      req.session.shuffledQuestions = shuffledQuestions;
-      req.session.userAnswers = Array(shuffledQuestions.length).fill(null);
+      console.log("Not found");
+    } else {
+      console.log("Found");
+    }
+      
+  try {
+
+    const allQuestions = await Question.find();
+    // const shuffledQuestions = allQuestions.sort(() => Math.random() - 0.5);
+    // const shuffledQuestions = shuffleArray(allQuestions);
+    const Answers = Array(allQuestions.length).fill(null);
+
+    const shuffledQuestions = allQuestions;
+    const userAnswers = Answers;
+
+    req.session.showQuestions = {
+      questions: shuffledQuestions,
+      userAnswers: userAnswers
     }
 
-    req.showQuestions = {
-      questions: req.session.shuffledQuestions,
-      userAnswers: req.session.userAnswers,
-    };
-
     next();
+
   } catch (err) {
     console.error('Error fetching questions', err);
     next(err);
@@ -49,19 +57,11 @@ app.use(async (req, res, next) => {
 });
 
 app.get('/', (req, res) => {
+
+  // Clear session data before starting
+  req.session = [];
+
   res.render('login');
-});
-
-app.get('/script.js', (req, res) => {
-  res.type('application/javascript');
-  // Your JavaScript file content or send the file using res.sendFile()
-  res.sendFile(path.join(__dirname, 'public', 'script.js'));
-});
-
-app.get('/style.css', (req, res) => {
-  res.type('text/css');
-  // Your CSS file content or send the file using res.sendFile()
-  res.sendFile('./Public/style.css');
 });
 
 app.post('/quiz', async (req, res) => {
@@ -76,12 +76,13 @@ app.post('/quiz', async (req, res) => {
 });
 
 app.get('/quiz/question/:index', (req, res) => {
+
   const index = parseInt(req.params.index);
-  const { questions, userAnswers } = req.showQuestions;
+  const { questions, userAnswers } = req.session.showQuestions;
   if (index < 0 || index >= questions.length) {
 
     const { username, score} = req.session;
-    const { questions } = req.showQuestions;
+    const { questions } = req.session.showQuestions;
 
     // Store the user's attempt in the database
 
@@ -104,6 +105,42 @@ app.get('/quiz/question/:index', (req, res) => {
     totalQuestions: questions.length,
     userAnswer: userAnswers[index],
   });
+});
+
+app.post('/quiz/answer/:index', (req, res) => {
+  const index = parseInt(req.params.index);
+  const { questions, userAnswers } = req.session.showQuestions;
+  const selectedOption = parseInt(req.body.answer);
+
+  // Update user's answers
+  userAnswers[index] = selectedOption;
+  req.session.showQuestions.userAnswers = userAnswers;
+
+  // Check if the answer is correct and update the score
+  if (selectedOption === questions[index].correctOption) {
+    req.session.score += 1;
+  }
+
+  res.redirect(`/quiz/question/${index + 1}`);
+});
+
+app.get('/quiz/complete', async (req, res) => {
+  const { username, score} = req.session;
+  const { questions } = req.session.showQuestions;
+
+  const userAtempt = {
+    username,
+    score: ((score / questions.length) * 100).toFixed(2),
+  }
+
+  //get list of users
+  const updatedUsers =  (await user.find().sort({ testScore: -1 })).slice(0, 5);
+
+  // Display the completion page
+  res.render('complete', { userAtempt, users: updatedUsers });
+
+  // Clear session data after completion
+  req.session = [];
 });
 
 app.get('/admin/addquestions', async (req, res) => {
@@ -136,42 +173,6 @@ app.post('/admin/deleteUsers', async (req, res) => {
     console.error(error);
     res.status(500).send('Internal Server Error');
   };
-});
-
-app.post('/quiz/answer/:index', (req, res) => {
-  const index = parseInt(req.params.index);
-  const { questions, userAnswers } = req.showQuestions;
-  const selectedOption = parseInt(req.body.answer);
-
-  // Update user's answers
-  userAnswers[index] = selectedOption;
-  req.showQuestions.userAnswers = userAnswers;
-
-  // Check if the answer is correct and update the score
-  if (selectedOption === questions[index].correctOption) {
-    req.session.score += 1;
-  }
-
-  res.redirect(`/quiz/question/${index + 1}`);
-});
-
-app.get('/quiz/complete', async (req, res) => {
-  const { username, score} = req.session;
-  const { questions } = req.showQuestions;
-
-  const userAtempt = {
-    username,
-    score: ((score / questions.length) * 100).toFixed(2),
-  }
-
-  //get list of users
-  const updatedUsers =  (await user.find().sort({ testScore: -1 })).slice(0, 5);
-
-  // Display the completion page
-  res.render('complete', { userAtempt, users: updatedUsers });
-
-  // Clear session data after completion
-  req.session = null;
 });
 
 let port = 8080;
