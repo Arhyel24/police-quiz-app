@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 // 'mongodb+srv://admin-wyteshadow:Mararra24@cluster0.bvh696d.mongodb.net/quizApp'
-mongoose.connect('mongodb://localhost:27017/quizApp');
+mongoose.connect('mongodb+srv://admin-wyteshadow:Mararra24@cluster0.bvh696d.mongodb.net/quizApp');
 // mongodb://localhost:27017/quizApp
 app.use(cookieSession({
   name: 'session',
