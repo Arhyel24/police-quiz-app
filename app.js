@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
-// const session = require('express-session')
 const Question = require('./models/question.js');
 const user = require('./models/user.js');
 const cookieSession = require('cookie-session');
@@ -16,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 // 'mongodb+srv://admin-wyteshadow:Mararra24@cluster0.bvh696d.mongodb.net/quizApp'
-mongoose.connect('mongodb+srv://admin-wyteshadow:Mararra24@cluster0.bvh696d.mongodb.net/quizApp');
+mongoose.connect('mongodb://localhost:27017/quizApp');
 // mongodb://localhost:27017/quizApp
 app.use(cookieSession({
   name: 'session',
@@ -25,44 +24,65 @@ app.use(cookieSession({
 }));
 
 
-  app.use(async (req, res, next) => {
-
-    if (!req.session.shuffledQuestions) {
-      console.log("Not found");
-    } else {
-      console.log("Found");
-    }
+app.use(async (req, res, next) => {
       
-  try {
+  // console.log(req.session);
+  // console.log(req.showQuestions);
 
-    const allQuestions = await Question.find();
-    // const shuffledQuestions = allQuestions.sort(() => Math.random() - 0.5);
-    // const shuffledQuestions = shuffleArray(allQuestions);
-    const Answers = Array(allQuestions.length).fill(null);
+try {
 
-    const shuffledQuestions = allQuestions;
-    const userAnswers = Answers;
+// if (req.showQuestions == null) {
 
-    req.session.showQuestions = {
-      questions: shuffledQuestions,
-      userAnswers: userAnswers
-    }
+  // console.log("Not found!!");
 
-    next();
+  const allQuestions = await Question.find();
+  // const shuffledQuestions = allQuestions.sort(() => Math.random() - 0.5);
 
-  } catch (err) {
-    console.error('Error fetching questions', err);
-    next(err);
-  };
+  const Answers = Array(allQuestions.length).fill(null);
+  // const pureQuestions = shuffledQuestions;
+  const userAnswers = Answers;
+
+  req.showQuestions = {
+    questions: allQuestions,
+    userAnswers: userAnswers
+  }
+
+  // console.log(Answers.length);
+  // console.log(req.showQuestions.userAnswers.slice(0, 5));
+
+  next();
+
+// } else {
+  
+//   console.log("Found proceed!!");
+
+//   next();
+// }
+
+} catch (err) {
+console.error('Error fetching questions', err);
+next(err);
+};
 });
 
 app.get('/', (req, res) => {
 
   // Clear session data before starting
-  req.session = [];
+  req.session = null;
+  req.showQuestions = null;
+
+  res.redirect('/login');
+});
+
+app.get('/login', (req, res) => {
+
+  // console.log(req.session);
+  // console.log(req.showQuestions);
 
   res.render('login');
-});
+})
+
+
 
 app.post('/quiz', async (req, res) => {
   const username = req.body.username;
@@ -78,11 +98,11 @@ app.post('/quiz', async (req, res) => {
 app.get('/quiz/question/:index', (req, res) => {
 
   const index = parseInt(req.params.index);
-  const { questions, userAnswers } = req.session.showQuestions;
+  const { questions, userAnswers } =  req.showQuestions;
   if (index < 0 || index >= questions.length) {
 
     const { username, score} = req.session;
-    const { questions } = req.session.showQuestions;
+    const { questions } =  req.showQuestions;
 
     // Store the user's attempt in the database
 
@@ -107,14 +127,15 @@ app.get('/quiz/question/:index', (req, res) => {
   });
 });
 
+
 app.post('/quiz/answer/:index', (req, res) => {
   const index = parseInt(req.params.index);
-  const { questions, userAnswers } = req.session.showQuestions;
+  const { questions, userAnswers } =  req.showQuestions;
   const selectedOption = parseInt(req.body.answer);
 
   // Update user's answers
   userAnswers[index] = selectedOption;
-  req.session.showQuestions.userAnswers = userAnswers;
+   req.showQuestions.userAnswers = userAnswers;
 
   // Check if the answer is correct and update the score
   if (selectedOption === questions[index].correctOption) {
@@ -126,7 +147,7 @@ app.post('/quiz/answer/:index', (req, res) => {
 
 app.get('/quiz/complete', async (req, res) => {
   const { username, score} = req.session;
-  const { questions } = req.session.showQuestions;
+  const { questions } =  req.showQuestions;
 
   const userAtempt = {
     username,
