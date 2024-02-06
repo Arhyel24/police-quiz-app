@@ -5,11 +5,12 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const Question = require('./models/question.js');
 const user = require('./models/user.js');
+const session = require('express-session');
 const cookieSession = require('cookie-session');
 
 const app = express();
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT;
 const mongoURI = process.env.MONGODB_URI;
 const sessionSecret = process.env.SESSION_SECRET;
 
@@ -17,6 +18,8 @@ const sessionSecret = process.env.SESSION_SECRET;
 app.set('view engine', 'ejs');
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
+
+console.log('MongoDB URI:', process.env.MONGODB_URI);
 
 // Check if the MongoDB connection URI is defined
 if (!mongoURI) {
@@ -41,10 +44,12 @@ mongoose.connect(mongoURI)
   console.error('Error connecting to MongoDB:', error);
 });
 
-app.use(cookieSession({
+app.use(session({
   name: 'session',
-  keys: [sessionSecret],
-  maxAge: 24 * 60 * 60 * 1000,
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }, // Adjust as per your security requirements
 }));
 
 app.get('/', (req, res) => {
