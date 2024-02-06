@@ -73,57 +73,34 @@ app.post('/quiz', async (req, res) => {
 
 app.use(async (req, res, next) => {
   try {
-    // Check if documents already exist in session
-    if (!req.session.questions) {
-      // Fetch documents from MongoDB if not in session
-      const allQuestions = await Question.find();
+    const allQuestions = await Question.find();
+    // const shuffledQuestions = allQuestions.sort(() => Math.random() - 0.5);
 
-      const Answers = Array(allQuestions.length).fill(null);
+    const Answers = Array(allQuestions.length).fill(null);
     // const pureQuestions = shuffledQuestions;
-      userAnswers = Answers;
+    userAnswers = Answers;
 
-      req.session.showQuestions = {
-        questions: allQuestions,
-        userAnswers: userAnswers
-      }
+    req.showQuestions = {
+      questions: allQuestions,
+      userAnswers: userAnswers
     }
 
     next();
+
   } catch (err) {
-    console.error('Error fetching questions:', err);
-    res.status(500).send('Internal Server Error');
-  }
+    console.error('Error fetching questions', err);
+    next(err);
+  };
 });
-// app.use(async (req, res, next) => {
-//   try {
-//     const allQuestions = await Question.find();
-//     // const shuffledQuestions = allQuestions.sort(() => Math.random() - 0.5);
-
-//     const Answers = Array(allQuestions.length).fill(null);
-//     // const pureQuestions = shuffledQuestions;
-//     userAnswers = Answers;
-
-//     req.session.showQuestions = {
-//       questions: allQuestions,
-//       userAnswers: userAnswers
-//     }
-
-//     next();
-
-//   } catch (err) {
-//     console.error('Error fetching questions', err);
-//     next(err);
-//   };
-// });
 
 app.get('/quiz/question/:index', (req, res) => {
 
   const index = parseInt(req.params.index);
-  const { questions, userAnswers } =  req.session.showQuestions;
+  const { questions, userAnswers } =  req.showQuestions;
   if (index < 0 || index >= questions.length) {
 
     const { username, score} = req.session;
-    const { questions } =  req.session.showQuestions;
+    const { questions } =  req.showQuestions;
 
     // Store the user's attempt in the database
     const userAttempt = new user ({
@@ -150,12 +127,12 @@ app.get('/quiz/question/:index', (req, res) => {
 
 app.post('/quiz/answer/:index', (req, res) => {
   const index = parseInt(req.params.index);
-  const { questions, userAnswers } =  req.session.showQuestions;
+  const { questions, userAnswers } =  req.showQuestions;
   const selectedOption = parseInt(req.body.answer);
 
   // Update user's answers
   userAnswers[index] = selectedOption;
-   req.session.showQuestions.userAnswers = userAnswers;
+   req.showQuestions.userAnswers = userAnswers;
 
   // Check if the answer is correct and update the score
   if (selectedOption === questions[index].correctOption) {
@@ -167,7 +144,7 @@ app.post('/quiz/answer/:index', (req, res) => {
 
 app.get('/quiz/complete', async (req, res) => {
   const { username, score} = req.session;
-  const { questions } =  req.session.showQuestions;
+  const { questions } =  req.showQuestions;
 
   const userAttempt = {
     username,
