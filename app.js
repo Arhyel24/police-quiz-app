@@ -6,7 +6,7 @@ const path = require('path');
 const Question = require('./models/question.js');
 const user = require('./models/user.js');
 const session = require('express-session');
-const cookieSession = require('cookie-session');
+// const cookieSession = require('cookie-session');
 
 const app = express();
 
