@@ -1,13 +1,26 @@
 body {
-    background: linear-gradient(70deg, red, blue);
+    background: linear-gradient(70deg, #8d87e2, #965ffb, #be4312);
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: 180% 180%;
     background-blend-mode: luminosity;
     font-family: Arial, sans-serif;
     margin: 20px;
     display: flex;
     justify-content: center;
     height: 100vh;
+    animation: gradient-animation 10s ease infinite;
+  }
+
+  @keyframes gradient-animation {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
   
   h1 {
@@ -234,6 +247,30 @@ main {
 li.optionlist {
   margin: .5rem 0;
   padding: .5rem 0;
+}
+#timer {
+  padding: .5rem;
+  background-color: rgb(48, 47, 47);
+  color: #fff;
+  display: block;
+  width: fit-content;
+  border-radius: 8px;
+}
+
+.timeranim {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @media screen and (max-width: 800px) {

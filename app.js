@@ -20,6 +20,7 @@ app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 console.log('MongoDB URI:', process.env.MONGODB_URI);
+console.log('Port:', process.env.port);
 
 // Check if the MongoDB connection URI is defined
 if (!mongoURI) {
@@ -35,7 +36,8 @@ if (!mongoURI.startsWith('mongodb://') && !mongoURI.startsWith('mongodb+srv://')
 }
 
 // Connect to MongoDB
-mongoose.connect(mongoURI)
+// mongoose.connect(mongoURI)
+mongoose.connect('mongodb+srv://admin-wyteshadow:Mararra24@cluster0.bvh696d.mongodb.net/quizApp')
 .then(() => {
   // console.log('Connected to MongoDB');
   // Start your Express server or perform other actions after successful connection

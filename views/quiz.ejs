@@ -11,8 +11,14 @@
   </div>
   <div class="questions-side">
       <div class="question">
+
+        <% var totalTimerInSeconds = 30; %>
+        <% var warningTimeInSeconds = 10; %>
+
+        <div id="timer">Remaining time: <%= totalTimerInSeconds %> seconds</div>
+
           <p><%= question.questionText %></p>
-          <form action="/quiz/answer/<%= index %>" method="post">
+          <form action="/quiz/answer/<%= index %>" method="post" id="quiz">
             <ul>
               <% question.options.forEach((option, i) => { %>
                 <li class="optionlist">
