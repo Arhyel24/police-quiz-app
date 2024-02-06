@@ -52,12 +52,16 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000,
 }));
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
 
   // Clear session data before starting
   req.session = null;
 
-  res.render('login');
+  //get list of users and display the top five scoring candidates
+  const updatedUsers =  (await user.find().sort({ testScore: -1 })).slice(0, 5);
+
+  // Display the completion page
+  res.render('login', { users: updatedUsers });
 });
 
 app.post('/quiz', async (req, res) => {

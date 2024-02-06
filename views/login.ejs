@@ -1,4 +1,5 @@
 <%- include('partials/header.ejs') %>
+<div class="container-flex">
   <div class="login">
     <h1>Get started</h1>
     <form action="/quiz" method="post">
@@ -7,5 +8,18 @@
       <button type="submit" class="btn btn-block">Start Quiz</button>
     </form>
   </div>
-
+  <div class="card">
+  <div class="leaderboard">
+    <h2>Leadership Board</h2>
+    <% users.forEach(user => { %>
+      <div class="item-4">
+        <div class="text">
+            <p><%= user.userName %></p>
+        </div>
+        <span><%= user.testScore %>%</span>
+    </div>
+    <% }) %>
+  </div>
+  </div>
+</div>
   <%- include('partials/footer.ejs') %>

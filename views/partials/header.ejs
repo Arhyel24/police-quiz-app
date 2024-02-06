@@ -104,7 +104,6 @@
     align-items: center;
     justify-content: center;
     padding: 1.5rem;
-    margin-top: 15%;
     background: rgba(255, 255, 255, .35);
     border: 1px solid rgba(255, 255, 255, 0.18);
     box-shadow: 0 8px 18px 0 rgba(31, 38, 135, 0.37);
@@ -281,6 +280,11 @@ li.optionlist {
   }
 }
 
+.container-flex {
+  display: flex;
+  gap: 2rem;
+}
+
 @media screen and (max-width: 800px) {
   .container {
       width: 100%;
@@ -298,6 +302,10 @@ li.optionlist {
 
   .l-box {
     width: 100%;
+  }
+
+  .container-flex {
+    flex-direction: column;
   }
 }
     </style>
