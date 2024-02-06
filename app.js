@@ -5,8 +5,8 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const Question = require('./models/question.js');
 const user = require('./models/user.js');
-const session = require('express-session');
-// const cookieSession = require('cookie-session');
+// const session = require('express-session');
+const cookieSession = require('cookie-session');
 
 const app = express();
 
@@ -46,12 +46,10 @@ mongoose.connect('mongodb+srv://admin-wyteshadow:Mararra24@cluster0.bvh696d.mong
 //   console.error('Error connecting to MongoDB:', error);
 // });
 
-app.use(session({
+app.use(cookieSession({
   name: 'session',
-  secret: sessionSecret,
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false }, // Adjust as per your security requirements
+  keys: ['your-secret-keys'],
+  maxAge: 24 * 60 * 60 * 1000;
 }));
 
 app.get('/', (req, res) => {
