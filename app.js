@@ -1,15 +1,17 @@
 const express = require('express');
+require('dotenv').config();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-let port = 8080;
 const path = require('path');
 const Question = require('./models/question.js');
 const user = require('./models/user.js');
 const cookieSession = require('cookie-session');
 
-require('dotenv').config();
-
 const app = express();
+
+const port = process.env.PORT || 8080;
+const mongoURI = process.env.MONGODB_URI;
+const sessionSecret = process.env.SESSION_SECRET;
 
 
 app.set('view engine', 'ejs');
@@ -17,12 +19,11 @@ app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-// 'mongodb+srv://admin-wyteshadow:Mararra24@cluster0.bvh696d.mongodb.net/quizApp'
-mongoose.connect(process.env.MONGODB_URI);
-// mongodb://localhost:27017/quizApp
+mongoose.connect(mongoURI);
+
 app.use(cookieSession({
   name: 'session',
-  keys: ['your-secret-key'],
+  keys: [sessionSecret],
   maxAge: 24 * 60 * 60 * 1000,
 }));
 
@@ -30,7 +31,6 @@ app.get('/', (req, res) => {
 
   // Clear session data before starting
   req.session = null;
-  req.showQuestions = null;
 
   res.render('login');
 });
@@ -48,6 +48,29 @@ app.post('/quiz', async (req, res) => {
 
 app.use(async (req, res, next) => {
   try {
+    // Check if documents already exist in session
+    if (!req.session.questions) {
+      // Fetch documents from MongoDB if not in session
+      const allQuestions = await Question.find();
+
+      const Answers = Array(allQuestions.length).fill(null);
+    // const pureQuestions = shuffledQuestions;
+      userAnswers = Answers;
+
+      req.session.showQuestions = {
+        questions: allQuestions,
+        userAnswers: userAnswers
+      }
+    }
+
+    next();
+  } catch (err) {
+    console.error('Error fetching questions:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+app.use(async (req, res, next) => {
+  try {
     const allQuestions = await Question.find();
     // const shuffledQuestions = allQuestions.sort(() => Math.random() - 0.5);
 
@@ -55,7 +78,7 @@ app.use(async (req, res, next) => {
     // const pureQuestions = shuffledQuestions;
     userAnswers = Answers;
 
-    req.showQuestions = {
+    req.session.showQuestions = {
       questions: allQuestions,
       userAnswers: userAnswers
     }
@@ -71,11 +94,11 @@ app.use(async (req, res, next) => {
 app.get('/quiz/question/:index', (req, res) => {
 
   const index = parseInt(req.params.index);
-  const { questions, userAnswers } =  req.showQuestions;
+  const { questions, userAnswers } =  req.session.showQuestions;
   if (index < 0 || index >= questions.length) {
 
     const { username, score} = req.session;
-    const { questions } =  req.showQuestions;
+    const { questions } =  req.session.showQuestions;
 
     // Store the user's attempt in the database
     const userAttempt = new user ({
@@ -102,12 +125,12 @@ app.get('/quiz/question/:index', (req, res) => {
 
 app.post('/quiz/answer/:index', (req, res) => {
   const index = parseInt(req.params.index);
-  const { questions, userAnswers } =  req.showQuestions;
+  const { questions, userAnswers } =  req.session.showQuestions;
   const selectedOption = parseInt(req.body.answer);
 
   // Update user's answers
   userAnswers[index] = selectedOption;
-   req.showQuestions.userAnswers = userAnswers;
+   req.session.showQuestions.userAnswers = userAnswers;
 
   // Check if the answer is correct and update the score
   if (selectedOption === questions[index].correctOption) {
@@ -119,7 +142,7 @@ app.post('/quiz/answer/:index', (req, res) => {
 
 app.get('/quiz/complete', async (req, res) => {
   const { username, score} = req.session;
-  const { questions } =  req.showQuestions;
+  const { questions } =  req.session.showQuestions;
 
   const userAttempt = {
     username,
