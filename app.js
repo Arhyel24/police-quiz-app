@@ -49,7 +49,7 @@ mongoose.connect('mongodb+srv://admin-wyteshadow:Mararra24@cluster0.bvh696d.mong
 app.use(cookieSession({
   name: 'session',
   keys: ['your-secret-keys'],
-  maxAge: 24 * 60 * 60 * 1000;
+  maxAge: 24 * 60 * 60 * 1000,
 }));
 
 app.get('/', (req, res) => {
