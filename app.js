@@ -18,9 +18,28 @@ app.set('view engine', 'ejs');
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-console.log(mongoURI);
+// Check if the MongoDB connection URI is defined
+if (!mongoURI) {
+  console.error('MongoDB connection URI is not defined');
+  process.exit(1);
+}
 
-mongoose.connect(mongoURI);
+// Validate the MongoDB connection URI
+if (!mongoURI.startsWith('mongodb://') && !mongoURI.startsWith('mongodb+srv://')) {
+  console.error('Invalid MongoDB connection URI:', mongoURI);
+  console.error('Expected connection string to start with "mongodb://" or "mongodb+srv://"');
+  process.exit(1);
+}
+
+// Connect to MongoDB
+mongoose.connect(mongoURI)
+.then(() => {
+  // console.log('Connected to MongoDB');
+  // Start your Express server or perform other actions after successful connection
+})
+.catch((error) => {
+  console.error('Error connecting to MongoDB:', error);
+});
 
 app.use(cookieSession({
   name: 'session',
