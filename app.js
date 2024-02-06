@@ -10,7 +10,7 @@ const cookieSession = require('cookie-session');
 
 const app = express();
 
-const port = process.env.PORT;
+const port = process.env.PORT || 8080;
 const mongoURI = process.env.MONGODB_URI;
 const sessionSecret = process.env.SESSION_SECRET;
 
@@ -19,32 +19,32 @@ app.set('view engine', 'ejs');
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-console.log('MongoDB URI:', process.env.MONGODB_URI);
-console.log('Port:', process.env.port);
+// console.log('MongoDB URI:', process.env.MONGODB_URI);
+// console.log('Port:', process.env.port);
 
-// Check if the MongoDB connection URI is defined
-if (!mongoURI) {
-  console.error('MongoDB connection URI is not defined');
-  process.exit(1);
-}
+// // Check if the MongoDB connection URI is defined
+// if (!mongoURI) {
+//   console.error('MongoDB connection URI is not defined');
+//   process.exit(1);
+// }
 
-// Validate the MongoDB connection URI
-if (!mongoURI.startsWith('mongodb://') && !mongoURI.startsWith('mongodb+srv://')) {
-  console.error('Invalid MongoDB connection URI:', mongoURI);
-  console.error('Expected connection string to start with "mongodb://" or "mongodb+srv://"');
-  process.exit(1);
-}
+// // Validate the MongoDB connection URI
+// if (!mongoURI.startsWith('mongodb://') && !mongoURI.startsWith('mongodb+srv://')) {
+//   console.error('Invalid MongoDB connection URI:', mongoURI);
+//   console.error('Expected connection string to start with "mongodb://" or "mongodb+srv://"');
+//   process.exit(1);
+// }
 
 // Connect to MongoDB
 // mongoose.connect(mongoURI)
 mongoose.connect('mongodb+srv://admin-wyteshadow:Mararra24@cluster0.bvh696d.mongodb.net/quizApp')
-.then(() => {
-  // console.log('Connected to MongoDB');
-  // Start your Express server or perform other actions after successful connection
-})
-.catch((error) => {
-  console.error('Error connecting to MongoDB:', error);
-});
+// .then(() => {
+//   // console.log('Connected to MongoDB');
+//   // Start your Express server or perform other actions after successful connection
+// })
+// .catch((error) => {
+//   console.error('Error connecting to MongoDB:', error);
+// });
 
 app.use(session({
   name: 'session',
