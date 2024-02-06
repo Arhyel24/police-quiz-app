@@ -18,8 +18,9 @@ app.set('view engine', 'ejs');
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+console.log(mongoURI);
 
-mongoose.connect("" + mongoURI + "");
+mongoose.connect(mongoURI);
 
 app.use(cookieSession({
   name: 'session',
