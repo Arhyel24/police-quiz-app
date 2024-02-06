@@ -20,7 +20,7 @@ app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-mongoose.connect('mongoURI');
+mongoose.connect(mongoURI);
 
 app.use(cookieSession({
   name: 'session',
