@@ -1,10 +1,10 @@
 <%- include('partials/header.ejs') %>
 <div class="card">
   <h1>Quiz Complete</h1>
-  <p>Hurray!!! <b><%= userAtempt.username %></b>, you have completed the quiz!</p>
-  <p>Your score: <b><%= userAtempt.score %>%</b></p>
+  <p>Hurray!!! <b><%= userAttempt.username %></b>, you have completed the quiz!</p>
+  <p>Your score: <b><%= userAttempt.score %>%</b></p>
 
-  <% if (userAtempt.score <= 50) { %>
+  <% if (userAttempt.score <= 50) { %>
     <p>You need to work a little harder next time.</p>
   <% } else { %>
     <p>Your doing great, keep it up!!</p>

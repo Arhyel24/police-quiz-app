@@ -1,21 +1,24 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+let port = 8080;
 const path = require('path');
 const Question = require('./models/question.js');
 const user = require('./models/user.js');
 const cookieSession = require('cookie-session');
 
+require('dotenv').config();
+
 const app = express();
 
 
 app.set('view engine', 'ejs');
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
 // 'mongodb+srv://admin-wyteshadow:Mararra24@cluster0.bvh696d.mongodb.net/quizApp'
-mongoose.connect('mongodb+srv://admin-wyteshadow:Mararra24@cluster0.bvh696d.mongodb.net/quizApp');
+mongoose.connect(process.env.MONGODB_URI);
 // mongodb://localhost:27017/quizApp
 app.use(cookieSession({
   name: 'session',
@@ -23,76 +26,46 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000,
 }));
 
-
-app.use(async (req, res, next) => {
-      
-  // console.log(req.session);
-  // console.log(req.showQuestions);
-
-try {
-
-// if (req.showQuestions == null) {
-
-  // console.log("Not found!!");
-
-  const allQuestions = await Question.find();
-  // const shuffledQuestions = allQuestions.sort(() => Math.random() - 0.5);
-
-  const Answers = Array(allQuestions.length).fill(null);
-  // const pureQuestions = shuffledQuestions;
-  const userAnswers = Answers;
-
-  req.showQuestions = {
-    questions: allQuestions,
-    userAnswers: userAnswers
-  }
-
-  // console.log(Answers.length);
-  // console.log(req.showQuestions.userAnswers.slice(0, 5));
-
-  next();
-
-// } else {
-  
-//   console.log("Found proceed!!");
-
-//   next();
-// }
-
-} catch (err) {
-console.error('Error fetching questions', err);
-next(err);
-};
-});
-
 app.get('/', (req, res) => {
 
   // Clear session data before starting
   req.session = null;
   req.showQuestions = null;
 
-  res.redirect('/login');
+  res.render('login');
 });
 
-app.get('/login', (req, res) => {
-
-  // console.log(req.session);
-  // console.log(req.showQuestions);
-
-  res.render('login');
-})
-
-
-
 app.post('/quiz', async (req, res) => {
+  //Get username from form
   const username = req.body.username;
   
+  // using the session to store the username and score
   req.session.username = username;
-
-
   req.session.score = 0;
 
   res.redirect('/quiz/question/0');
+});
+
+app.use(async (req, res, next) => {
+  try {
+    const allQuestions = await Question.find();
+    // const shuffledQuestions = allQuestions.sort(() => Math.random() - 0.5);
+
+    const Answers = Array(allQuestions.length).fill(null);
+    // const pureQuestions = shuffledQuestions;
+    userAnswers = Answers;
+
+    req.showQuestions = {
+      questions: allQuestions,
+      userAnswers: userAnswers
+    }
+
+    next();
+
+  } catch (err) {
+    console.error('Error fetching questions', err);
+    next(err);
+  };
 });
 
 app.get('/quiz/question/:index', (req, res) => {
@@ -105,7 +78,6 @@ app.get('/quiz/question/:index', (req, res) => {
     const { questions } =  req.showQuestions;
 
     // Store the user's attempt in the database
-
     const userAttempt = new user ({
       userName: username,
       testScore: ((score / questions.length) * 100).toFixed(2), // Calculate percentage
@@ -149,19 +121,16 @@ app.get('/quiz/complete', async (req, res) => {
   const { username, score} = req.session;
   const { questions } =  req.showQuestions;
 
-  const userAtempt = {
+  const userAttempt = {
     username,
     score: ((score / questions.length) * 100).toFixed(2),
   }
 
-  //get list of users
+  //get list of users and display the top five scoring candidates
   const updatedUsers =  (await user.find().sort({ testScore: -1 })).slice(0, 5);
 
   // Display the completion page
-  res.render('complete', { userAtempt, users: updatedUsers });
-
-  // Clear session data after completion
-  req.session = [];
+  res.render('complete', { userAttempt, users: updatedUsers });
 });
 
 app.get('/admin/addquestions', async (req, res) => {
@@ -195,11 +164,6 @@ app.post('/admin/deleteUsers', async (req, res) => {
     res.status(500).send('Internal Server Error');
   };
 });
-
-let port = 8080;
-if (port == null || port == "") {
-  port = 3000;
-}
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

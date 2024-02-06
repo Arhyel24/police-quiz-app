@@ -1,12 +1,12 @@
 body {
-    background-image: url("/images/OQCI8I0.jpg");
+    background: linear-gradient(70deg, red, blue);
     background-repeat: no-repeat;
-    background-position: center;
     background-size: cover;
+    background-blend-mode: luminosity;
     font-family: Arial, sans-serif;
     margin: 20px;
-    display: grid;
-    place-items: center;
+    display: flex;
+    justify-content: center;
     height: 100vh;
   }
   
@@ -55,7 +55,7 @@ body {
 
   .card {
     width: 300px;
-    /* height: 500px; */
+    height: fit-content;
     border-radius: 20px;
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
@@ -74,7 +74,7 @@ body {
 
   .login {
     width: 300px;
-    /* height: 500px; */
+    height: fit-content;
     border-radius: 20px;
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
@@ -83,6 +83,7 @@ body {
     align-items: center;
     justify-content: center;
     padding: 1.5rem;
+    margin-top: 15%;
     background: rgba(255, 255, 255, .35);
     border: 1px solid rgba(255, 255, 255, 0.18);
     box-shadow: 0 8px 18px 0 rgba(31, 38, 135, 0.37);
@@ -96,6 +97,7 @@ body {
     padding: .7rem .3rem;
     width: 95%;
     transition: .5s ease-in-out;
+    margin-top: 1rem;
     margin-bottom: 1.5rem;
   }
 
@@ -106,6 +108,14 @@ body {
   .login form {
     width: 100%;
     padding: .2rem;
+  }
+
+  .login h1 {
+    font-size: 2.1rem;
+  }
+
+  .login label {
+    margin-bottom: 1rem;
   }
 
   .btn {
@@ -162,6 +172,86 @@ body {
 .buttons {
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
+}
+
+main {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  display: flex;
+  width: 80%;
+  padding: 2rem;
+}
+
+
+.legend-box{
+  width: 30%;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+} 
+
+.questions-side {
+  width: 70%;
+  padding: .5rem;
+  height: fit-content;
+  border: 1px solid black;
+  border-radius: 10px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  background: rgba(255, 255, 255, .35);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 5px 10px 0 rgba(31, 38, 135, 0.37);
+}
+.legend-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.l-box {
+  width: 80%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.l-box a {
+  text-decoration: none;
+  border: 1px solid black;
+  width: 2rem;
+  height: 2rem;
+  text-align: center;
+  border-radius: 5px;
+  background-color: rgba(206, 205, 205, 0.938);
+  color: #000;
+}
+
+li.optionlist {
+  margin: .5rem 0;
+  padding: .5rem 0;
+}
+
+@media screen and (max-width: 800px) {
+  .container {
+      width: 100%;
+      flex-direction: column-reverse;
+      justify-content: flex-end;
+  }
+
+  .legend-box, .questions-side {
+      width: 100%;
+  }
+
+  .legend-box {
+      justify-content: center;
+  } 
+
+  .l-box {
+    width: 100%;
+  }
 }

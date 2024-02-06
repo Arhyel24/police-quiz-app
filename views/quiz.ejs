@@ -1,6 +1,7 @@
 <%- include('partials/header.ejs') %>
 <div class="container">
   <div class="legend-box">
+      <a href="/quiz/question/<%= totalQuestions %>" class="btn btn-md">Submit</a>
       <h2>Question <%= index + 1 %> of <%= totalQuestions %></h2>
       <div class="l-box">
           <% for( let i = 0; i < totalQuestions; i++ ) { %>
