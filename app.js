@@ -94,27 +94,27 @@ app.use(async (req, res, next) => {
     res.status(500).send('Internal Server Error');
   }
 });
-app.use(async (req, res, next) => {
-  try {
-    const allQuestions = await Question.find();
-    // const shuffledQuestions = allQuestions.sort(() => Math.random() - 0.5);
+// app.use(async (req, res, next) => {
+//   try {
+//     const allQuestions = await Question.find();
+//     // const shuffledQuestions = allQuestions.sort(() => Math.random() - 0.5);
 
-    const Answers = Array(allQuestions.length).fill(null);
-    // const pureQuestions = shuffledQuestions;
-    userAnswers = Answers;
+//     const Answers = Array(allQuestions.length).fill(null);
+//     // const pureQuestions = shuffledQuestions;
+//     userAnswers = Answers;
 
-    req.session.showQuestions = {
-      questions: allQuestions,
-      userAnswers: userAnswers
-    }
+//     req.session.showQuestions = {
+//       questions: allQuestions,
+//       userAnswers: userAnswers
+//     }
 
-    next();
+//     next();
 
-  } catch (err) {
-    console.error('Error fetching questions', err);
-    next(err);
-  };
-});
+//   } catch (err) {
+//     console.error('Error fetching questions', err);
+//     next(err);
+//   };
+// });
 
 app.get('/quiz/question/:index', (req, res) => {
 
