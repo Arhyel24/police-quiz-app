@@ -17,3 +17,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+var varTimerInSeconds = 30;
+var warningTimeInSeconds = 10;
+
+function updateTimer() {
+var timerElement = document.getElementById("timer");
+
+if (varTimerInSeconds <= warningTimeInSeconds) {
+  timerElement.style.color = "red";
+  timerElement.classList.add("timeranim");
+}
+
+timerElement.textContent = "Timer: " + varTimerInSeconds + " seconds";
+
+if (varTimerInSeconds <= 0) {
+  document.getElementById("quiz").submit();
+} else {
+  setTimeout(function () {
+    varTimerInSeconds--;
+    updateTimer();
+  }, 1000);
+}
+}
+
+updateTimer();
